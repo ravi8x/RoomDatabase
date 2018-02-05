@@ -15,13 +15,13 @@ import info.androidhive.roomdatabase.model.NoteDao;
 
 public class NotesRepository {
 
-    private NoteDao mNoteAdo;
+    private NoteDao mNoteDao;
     private LiveData<List<Note>> mAllNotes;
 
     NotesRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
-        mNoteAdo = db.noteDao();
-        mAllNotes = mNoteAdo.getAllNotes();
+        mNoteDao = db.noteDao();
+        mAllNotes = mNoteDao.getAllNotes();
     }
 
     LiveData<List<Note>> getAllNotes() {
@@ -29,8 +29,22 @@ public class NotesRepository {
     }
 
     public void insertNote(Note note) {
-        new insertNotesAsync(mNoteAdo).execute(note);
+        new insertNotesAsync(mNoteDao).execute(note);
     }
+
+    public void updateNote(Note note) {
+        new updateNotesAsync(mNoteDao).execute(note);
+    }
+
+    public void deleteNote(Note note) {
+        new deleteNotesAsync(mNoteDao).execute(note);
+    }
+
+    /**
+     * NOTE: all write operations should be done in background thread,
+     * otherwise the below error will be thrown
+     * `java.lang.IllegalStateException: Cannot access database on the main thread since it may potentially lock the UI for a long period of time.`
+     */
 
     private static class insertNotesAsync extends AsyncTask<Note, Void, Void> {
 
@@ -43,6 +57,36 @@ public class NotesRepository {
         @Override
         protected Void doInBackground(Note... notes) {
             mNoteDaoAsync.insert(notes[0]);
+            return null;
+        }
+    }
+
+    private static class updateNotesAsync extends AsyncTask<Note, Void, Void> {
+
+        private NoteDao mNoteDaoAsync;
+
+        updateNotesAsync(NoteDao noteDao) {
+            mNoteDaoAsync = noteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            mNoteDaoAsync.update(notes[0]);
+            return null;
+        }
+    }
+
+    private static class deleteNotesAsync extends AsyncTask<Note, Void, Void> {
+
+        private NoteDao mNoteDaoAsync;
+
+        deleteNotesAsync(NoteDao noteDao) {
+            mNoteDaoAsync = noteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Note... notes) {
+            mNoteDaoAsync.delete(notes[0]);
             return null;
         }
     }

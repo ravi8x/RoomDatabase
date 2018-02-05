@@ -3,21 +3,26 @@ package info.androidhive.roomdatabase;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
+import info.androidhive.roomdatabase.adapter.NotesAdapter;
 import info.androidhive.roomdatabase.model.Note;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private NotesRepository notesRepository;
+    private RecyclerView recyclerView;
+    private NotesAdapter mAdapter;
+    private List<Note> noteList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,26 +42,46 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        recyclerView = findViewById(R.id.recycler_view);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                // inserting note
+                final Note note = new Note("Call mother from FAB!");
+                notesRepository.insertNote(note);
             }
         });
+
+        mAdapter = new NotesAdapter(noteList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+
 
         db = AppDatabase.getDatabase(getApplicationContext());
         notesRepository = new NotesRepository(getApplication());
 
-
-        // inserting note
-        Note note = new Note("Call brother!");
-        notesRepository.insertNote(note);
-
         LiveData<List<Note>> notes = notesRepository.getAllNotes();
 
-        // TODO - article has halted as it needs MVVM architecture and android architecture components to be covered first
+        Observer<List<Note>> notesObserver = new Observer<List<Note>>() {
+            @Override
+            public void onChanged(@Nullable List<Note> notes) {
+                Log.e(TAG, "onChanged: " + notes.size());
+                noteList.clear();
+                noteList.addAll(notes);
+                mAdapter.notifyDataSetChanged();
+            }
+        };
+
+        notes.observe(this, notesObserver);
+
+        // updating note
+        Note mm = new Note("Don't call brother!");
+        mm.setId(1);
+        notesRepository.updateNote(mm);
     }
 
     @Override
