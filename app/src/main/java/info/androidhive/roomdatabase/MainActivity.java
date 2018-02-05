@@ -1,15 +1,31 @@
 package info.androidhive.roomdatabase;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+import info.androidhive.roomdatabase.model.Note;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private AppDatabase db;
+    private NotesRepository notesRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +42,18 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        db = AppDatabase.getDatabase(getApplicationContext());
+        notesRepository = new NotesRepository(getApplication());
+
+
+        // inserting note
+        Note note = new Note("Call brother!");
+        notesRepository.insertNote(note);
+
+        LiveData<List<Note>> notes = notesRepository.getAllNotes();
+
+        // TODO - article has halted as it needs MVVM architecture and android architecture components to be covered first
     }
 
     @Override
