@@ -5,6 +5,7 @@ package info.androidhive.roomdatabase.adapter;
  */
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.model.Note;
+import info.androidhive.roomdatabase.model.Tag;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
+
+    private static final String TAG = NotesAdapter.class.getSimpleName();
 
     private List<Note> notes;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.note)
-        public TextView note;
+        TextView note;
+
+        @BindView(R.id.tags)
+        TextView tags;
 
         public MyViewHolder(View view) {
             super(view);
@@ -48,6 +55,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Note movie = notes.get(position);
         holder.note.setText(movie.getNote());
+
+        if (movie.getTags() != null) {
+            String tmp = "";
+            for (Tag tag : movie.getTags()) {
+                Log.e(TAG, "onBind: " + tag.getId() + ", " + tag.getName());
+                tmp += tag.getName() + ",";
+            }
+
+            holder.tags.setText(tmp);
+        }
     }
 
     @Override

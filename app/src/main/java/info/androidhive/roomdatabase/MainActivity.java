@@ -21,9 +21,11 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import info.androidhive.roomdatabase.adapter.NotesAdapter;
 import info.androidhive.roomdatabase.model.Note;
+import info.androidhive.roomdatabase.model.Tag;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,7 +52,26 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // inserting note
                 final Note note = new Note("Call mother from FAB!");
+
+                List<Tag> tags = new ArrayList<>();
+                tags.add(new Tag("Android"));
+                tags.add(new Tag("Material Design"));
+                note.setTags(tags);
+
                 notesRepository.insertNote(note);
+
+                List<Tag> tagsFromDb = null;
+                try {
+                    tagsFromDb = notesRepository.getAllTags();
+                    for (Tag tag : tagsFromDb) {
+                        Log.e(TAG, "Tag: " + tag.getId() + ", " + tag.getName());
+                    }
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -82,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         Note mm = new Note("Don't call brother!");
         mm.setId(1);
         notesRepository.updateNote(mm);
+
+        // notesRepository.deleteAllNotes();
     }
 
     @Override

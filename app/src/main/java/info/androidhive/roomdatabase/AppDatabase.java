@@ -6,19 +6,25 @@ import android.arch.persistence.room.DatabaseConfiguration;
 import android.arch.persistence.room.InvalidationTracker;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import info.androidhive.roomdatabase.model.Note;
 import info.androidhive.roomdatabase.model.NoteDao;
+import info.androidhive.roomdatabase.model.Tag;
+import info.androidhive.roomdatabase.model.TagDao;
+import info.androidhive.roomdatabase.model.TagTypeConverter;
 
 /**
  * Created by ravi on 05/02/18.
  */
 
-@Database(entities = {Note.class}, version = 1)
+@Database(entities = {Note.class, Tag.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract NoteDao noteDao();
+
+    public abstract TagDao tagDao();
 
     private static AppDatabase INSTANCE;
 
