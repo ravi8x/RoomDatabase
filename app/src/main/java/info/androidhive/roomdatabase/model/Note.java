@@ -20,9 +20,6 @@ public class Note {
     @ColumnInfo(name = "note")
     String note;
 
-    @TypeConverters(TagTypeConverter.class)
-    List<Tag> tags;
-
     public Note(@NonNull String note) {
         this.note = note;
     }
@@ -41,13 +38,5 @@ public class Note {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
     }
 }

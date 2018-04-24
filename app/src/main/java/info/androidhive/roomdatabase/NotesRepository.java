@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 import info.androidhive.roomdatabase.model.Note;
 import info.androidhive.roomdatabase.model.NoteDao;
+import info.androidhive.roomdatabase.model.NoteTagDao;
 import info.androidhive.roomdatabase.model.Tag;
 import info.androidhive.roomdatabase.model.TagDao;
 
@@ -20,12 +21,14 @@ public class NotesRepository {
 
     private NoteDao mNoteDao;
     private TagDao mTagDao;
+    private NoteTagDao mNoteTagDao;
     private LiveData<List<Note>> mAllNotes;
 
     NotesRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         mNoteDao = db.noteDao();
         mTagDao = db.tagDao();
+        mNoteTagDao = db.noteTagDao();
         mAllNotes = mNoteDao.getAllNotes();
     }
 

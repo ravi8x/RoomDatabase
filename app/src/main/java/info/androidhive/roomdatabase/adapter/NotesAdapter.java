@@ -56,7 +56,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
         Note movie = notes.get(position);
         holder.note.setText(movie.getNote());
 
-        if (movie.getTags() != null) {
+        /*if (movie.getTags() != null) {
             String tmp = "";
             for (Tag tag : movie.getTags()) {
                 Log.e(TAG, "onBind: " + tag.getId() + ", " + tag.getName());
@@ -64,7 +64,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
             }
 
             holder.tags.setText(tmp);
-        }
+        }*/
     }
 
     @Override

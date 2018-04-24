@@ -2,6 +2,7 @@ package info.androidhive.roomdatabase.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -9,7 +10,7 @@ import android.support.annotation.NonNull;
  * Created by ravi on 05/02/18.
  */
 
-@Entity(tableName = "tags")
+@Entity(tableName = "tags", indices={@Index(value="name", unique=true)})
 public class Tag {
     @PrimaryKey(autoGenerate = true)
     int id;
