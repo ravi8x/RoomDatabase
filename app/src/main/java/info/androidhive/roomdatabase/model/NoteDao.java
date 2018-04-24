@@ -24,6 +24,7 @@ public interface NoteDao {
     long insert(Note note);
 
     // TODO - use @Transaction to insert notes and tags
+    // add CASCADE to all tables
     // @Transaction
     // void insertNotesAndTags(Note note, List<Tag> tags);
 
