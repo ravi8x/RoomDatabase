@@ -9,9 +9,6 @@ import java.util.concurrent.ExecutionException;
 
 import info.androidhive.roomdatabase.model.Note;
 import info.androidhive.roomdatabase.model.NoteDao;
-import info.androidhive.roomdatabase.model.NoteTagDao;
-import info.androidhive.roomdatabase.model.Tag;
-import info.androidhive.roomdatabase.model.TagDao;
 
 /**
  * Created by ravi on 05/02/18.
@@ -20,20 +17,20 @@ import info.androidhive.roomdatabase.model.TagDao;
 public class NotesRepository {
 
     private NoteDao mNoteDao;
-    private TagDao mTagDao;
-    private NoteTagDao mNoteTagDao;
     private LiveData<List<Note>> mAllNotes;
 
     NotesRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         mNoteDao = db.noteDao();
-        mTagDao = db.tagDao();
-        mNoteTagDao = db.noteTagDao();
         mAllNotes = mNoteDao.getAllNotes();
     }
 
     LiveData<List<Note>> getAllNotes() {
         return mAllNotes;
+    }
+
+    public Note getNote(int noteId) {
+        return mNoteDao.getNoteById(noteId);
     }
 
     public void insertNote(Note note) {
@@ -52,13 +49,9 @@ public class NotesRepository {
         new deleteAllNotesAsync(mNoteDao).execute();
     }
 
-    public List<Tag> getAllTags() throws ExecutionException, InterruptedException {
-        return new getAllTagsAsync(mTagDao).execute().get();
-    }
-
     /**
      * NOTE: all write operations should be done in background thread,
-     * otherwise the below error will be thrown
+     * otherwise the following error will be thrown
      * `java.lang.IllegalStateException: Cannot access database on the main thread since it may potentially lock the UI for a long period of time.`
      */
 
@@ -119,20 +112,6 @@ public class NotesRepository {
         protected Void doInBackground(Note... notes) {
             mNoteDaoAsync.deleteAll();
             return null;
-        }
-    }
-
-    private static class getAllTagsAsync extends AsyncTask<Note, Void, List<Tag>> {
-
-        private TagDao mTagDaoAsync;
-
-        getAllTagsAsync(TagDao tagDao) {
-            mTagDaoAsync = tagDao;
-        }
-
-        @Override
-        protected List<Tag> doInBackground(Note... notes) {
-            return mTagDaoAsync.getAll();
         }
     }
 }

@@ -20,13 +20,11 @@ public interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY id DESC")
     LiveData<List<Note>> getAllNotes();
 
+    @Query("SELECT * FROM notes WHERE id=:id")
+    Note getNoteById(int id);
+
     @Insert
     long insert(Note note);
-
-    // TODO - use @Transaction to insert notes and tags
-    // add CASCADE to all tables
-    // @Transaction
-    // void insertNotesAndTags(Note note, List<Tag> tags);
 
     @Update
     void update(Note note);
