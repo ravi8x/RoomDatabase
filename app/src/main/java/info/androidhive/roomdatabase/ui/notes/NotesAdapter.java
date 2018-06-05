@@ -10,12 +10,14 @@ import android.graphics.Color;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     private static final String TAG = NotesAdapter.class.getSimpleName();
 
     private Context context;
-    private List<NoteEntity> noteList;
+    private List<NoteEntity> mNoteList;
     private NotesAdapterListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -49,14 +51,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onClick(noteList.get(getLayoutPosition()), getLayoutPosition());
+                    listener.onClick(mNoteList.get(getLayoutPosition()), getLayoutPosition());
                 }
             });
 
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    listener.onLongClick(noteList.get(getLayoutPosition()), getLayoutPosition());
+                    listener.onLongClick(mNoteList.get(getLayoutPosition()), getLayoutPosition());
                     return true;
                 }
             });
@@ -79,8 +81,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if (noteList != null) {
-            NoteEntity note = noteList.get(position);
+        if (mNoteList != null) {
+            NoteEntity note = mNoteList.get(position);
             holder.note.setText(note.getNote());
             // Displaying dot from HTML character code
             holder.dot.setText(Html.fromHtml("&#8226;"));
@@ -95,46 +97,65 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        if (noteList != null)
-            return noteList.size();
-        else
-            return noteList.size();
+        return mNoteList == null ? 0 : mNoteList.size();
     }
 
     public void setNoteList(final List<NoteEntity> notes) {
-        if (noteList == null) {
-            noteList = notes;
-            notifyItemRangeInserted(0, noteList.size());
+        if (mNoteList == null) {
+            mNoteList = new ArrayList<>();
+            mNoteList.addAll(notes);
+            notifyItemRangeInserted(0, mNoteList.size());
         } else {
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                @Override
-                public int getOldListSize() {
-                    return noteList.size();
-                }
 
-                @Override
-                public int getNewListSize() {
-                    return notes.size();
-                }
+            /**
+             * TODO - Fix bug
+             * DiffUti is always returning true for different objects
+             * Observations: array list reference is maintained even though
+             * new instance is created
+             * */
 
-                @Override
-                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    NoteEntity oldNote = noteList.get(oldItemPosition);
-                    NoteEntity newNote = notes.get(newItemPosition);
+            final List<NoteEntity> newList = new ArrayList<>();
+            newList.addAll(notes);
 
-                    return oldNote.getId() == newNote.getId();
-                }
+            NotesDiffCallback notesDiffCallback = new NotesDiffCallback(mNoteList, notes);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(notesDiffCallback);
 
-                @Override
-                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    NoteEntity oldNote = noteList.get(oldItemPosition);
-                    NoteEntity newNote = notes.get(newItemPosition);
-
-                    return oldNote.getId() == newNote.getId() && oldNote.getNote().equals(newNote.getNote());
-                }
-            });
-            noteList = notes;
+            mNoteList.clear();
+            mNoteList.addAll(notes);
             diffResult.dispatchUpdatesTo(this);
+        }
+    }
+
+    class NotesDiffCallback extends DiffUtil.Callback {
+
+        private final List<NoteEntity> oldNotes, newNotes;
+
+        public NotesDiffCallback(List<NoteEntity> oldNotes, List<NoteEntity> newNotes) {
+            this.oldNotes = oldNotes;
+            this.newNotes = newNotes;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldNotes.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newNotes.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldNotes.get(oldItemPosition).getId() == newNotes.get(newItemPosition).getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            Log.e(TAG, "areContentsTheSame: " + oldNotes.get(oldItemPosition).equals(newNotes.get(newItemPosition)) + ", " + oldNotes.get(oldItemPosition).getNote() + " = " + newNotes.get(newItemPosition).getNote());
+
+            return oldNotes.get(oldItemPosition).getId() == newNotes.get(newItemPosition).getId()
+                    && oldNotes.get(oldItemPosition).getNote().equals(newNotes.get(newItemPosition).getNote());
         }
     }
 

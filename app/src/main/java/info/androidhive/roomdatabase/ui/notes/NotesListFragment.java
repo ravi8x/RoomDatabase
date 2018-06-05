@@ -25,7 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import info.androidhive.roomdatabase.MainActivity;
+import butterknife.Unbinder;
 import info.androidhive.roomdatabase.R;
 import info.androidhive.roomdatabase.db.NotesRepository;
 import info.androidhive.roomdatabase.db.dao.NoteEntity;
@@ -34,11 +34,12 @@ import info.androidhive.roomdatabase.utils.MyDividerItemDecoration;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdapterListener {
+public class NotesListFragment extends Fragment implements NotesAdapter.NotesAdapterListener {
 
-    public static final String TAG = NoteListFragment.class.getSimpleName();
-    private NotesRepository notesRepository;
+    public static final String TAG = NotesListFragment.class.getSimpleName();
+    private NotesListViewModel viewModel;
     private NotesAdapter mAdapter;
+    private Unbinder unbinder;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -46,7 +47,7 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
     @BindView(R.id.txt_empty_notes_view)
     TextView noNotesView;
 
-    public NoteListFragment() {
+    public NotesListFragment() {
         // Required empty public constructor
     }
 
@@ -56,25 +57,36 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = ViewModelProviders.of(getActivity()).get(NotesListViewModel.class);
+
         mAdapter = new NotesAdapter(getActivity(), this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 16));
         recyclerView.setAdapter(mAdapter);
+    }
 
-        notesRepository = new NotesRepository(getActivity().getApplication());
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        notesRepository.getAllNotes().observe(this, new Observer<List<NoteEntity>>() {
+        viewModel.getNotes().observe(this, new Observer<List<NoteEntity>>() {
             @Override
             public void onChanged(@Nullable List<NoteEntity> notes) {
+
+                for (NoteEntity note : notes) {
+                    Log.e(TAG, note.getId() + ", " + note.getNote());
+                }
+
                 mAdapter.setNoteList(notes);
                 toggleEmptyNotes(notes.size());
             }
@@ -87,6 +99,10 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
         } else {
             noNotesView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void deleteAllNotes() {
+        viewModel.deleteAllNotes();
     }
 
     /**
@@ -140,11 +156,11 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
                 // check if user updating note
                 if (shouldUpdate && note != null) {
                     note.setNote(inputNote.getText().toString());
-                    notesRepository.updateNote(note);
+                    viewModel.updateNote(note);
                 } else {
                     // create new note
                     NoteEntity note = new NoteEntity(inputNote.getText().toString());
-                    notesRepository.insertNote(note);
+                    viewModel.insertNote(note);
                 }
             }
         });
@@ -166,7 +182,7 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
                 if (which == 0) {
                     showNoteDialog(true, note, position);
                 } else {
-                    notesRepository.deleteNote(note);
+                    viewModel.deleteNote(note);
                 }
             }
         });
@@ -181,5 +197,11 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
     @Override
     public void onLongClick(NoteEntity note, int position) {
         showActionsDialog(note, position);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }
