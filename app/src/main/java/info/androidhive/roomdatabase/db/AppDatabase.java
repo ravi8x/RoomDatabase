@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase;
+package info.androidhive.roomdatabase.db;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
@@ -6,16 +6,16 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-import info.androidhive.roomdatabase.model.Note;
-import info.androidhive.roomdatabase.model.NoteDao;
-import info.androidhive.roomdatabase.utils.TimestampConverter;
+import info.androidhive.roomdatabase.db.dao.NoteEntity;
+import info.androidhive.roomdatabase.db.entity.NoteDao;
+import info.androidhive.roomdatabase.db.converter.DateConverter;
 
 /**
  * Created by ravi on 05/02/18.
  */
 
-@Database(entities = {Note.class}, version = 1)
-@TypeConverters({TimestampConverter.class})
+@Database(entities = {NoteEntity.class}, version = 1)
+@TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract NoteDao noteDao();

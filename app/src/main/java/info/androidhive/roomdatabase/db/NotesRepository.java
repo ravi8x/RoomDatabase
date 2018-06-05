@@ -1,14 +1,13 @@
-package info.androidhive.roomdatabase;
+package info.androidhive.roomdatabase.db;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import info.androidhive.roomdatabase.model.Note;
-import info.androidhive.roomdatabase.model.NoteDao;
+import info.androidhive.roomdatabase.db.dao.NoteEntity;
+import info.androidhive.roomdatabase.db.entity.NoteDao;
 
 /**
  * Created by ravi on 05/02/18.
@@ -17,31 +16,31 @@ import info.androidhive.roomdatabase.model.NoteDao;
 public class NotesRepository {
 
     private NoteDao mNoteDao;
-    private LiveData<List<Note>> mAllNotes;
+    private LiveData<List<NoteEntity>> mAllNotes;
 
-    NotesRepository(Application application) {
+    public NotesRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         mNoteDao = db.noteDao();
         mAllNotes = mNoteDao.getAllNotes();
     }
 
-    LiveData<List<Note>> getAllNotes() {
+    public LiveData<List<NoteEntity>> getAllNotes() {
         return mAllNotes;
     }
 
-    public Note getNote(int noteId) {
+    public NoteEntity getNote(int noteId) {
         return mNoteDao.getNoteById(noteId);
     }
 
-    public void insertNote(Note note) {
+    public void insertNote(NoteEntity note) {
         new insertNotesAsync(mNoteDao).execute(note);
     }
 
-    public void updateNote(Note note) {
+    public void updateNote(NoteEntity note) {
         new updateNotesAsync(mNoteDao).execute(note);
     }
 
-    public void deleteNote(Note note) {
+    public void deleteNote(NoteEntity note) {
         new deleteNotesAsync(mNoteDao).execute(note);
     }
 
@@ -55,7 +54,7 @@ public class NotesRepository {
      * `java.lang.IllegalStateException: Cannot access database on the main thread since it may potentially lock the UI for a long period of time.`
      */
 
-    private static class insertNotesAsync extends AsyncTask<Note, Void, Long> {
+    private static class insertNotesAsync extends AsyncTask<NoteEntity, Void, Long> {
 
         private NoteDao mNoteDaoAsync;
 
@@ -64,13 +63,13 @@ public class NotesRepository {
         }
 
         @Override
-        protected Long doInBackground(Note... notes) {
+        protected Long doInBackground(NoteEntity... notes) {
             long id = mNoteDaoAsync.insert(notes[0]);
             return id;
         }
     }
 
-    private static class updateNotesAsync extends AsyncTask<Note, Void, Void> {
+    private static class updateNotesAsync extends AsyncTask<NoteEntity, Void, Void> {
 
         private NoteDao mNoteDaoAsync;
 
@@ -79,13 +78,13 @@ public class NotesRepository {
         }
 
         @Override
-        protected Void doInBackground(Note... notes) {
+        protected Void doInBackground(NoteEntity... notes) {
             mNoteDaoAsync.update(notes[0]);
             return null;
         }
     }
 
-    private static class deleteNotesAsync extends AsyncTask<Note, Void, Void> {
+    private static class deleteNotesAsync extends AsyncTask<NoteEntity, Void, Void> {
 
         private NoteDao mNoteDaoAsync;
 
@@ -94,13 +93,13 @@ public class NotesRepository {
         }
 
         @Override
-        protected Void doInBackground(Note... notes) {
+        protected Void doInBackground(NoteEntity... notes) {
             mNoteDaoAsync.delete(notes[0]);
             return null;
         }
     }
 
-    private static class deleteAllNotesAsync extends AsyncTask<Note, Void, Void> {
+    private static class deleteAllNotesAsync extends AsyncTask<NoteEntity, Void, Void> {
 
         private NoteDao mNoteDaoAsync;
 
@@ -109,7 +108,7 @@ public class NotesRepository {
         }
 
         @Override
-        protected Void doInBackground(Note... notes) {
+        protected Void doInBackground(NoteEntity... notes) {
             mNoteDaoAsync.deleteAll();
             return null;
         }

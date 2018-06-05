@@ -1,22 +1,18 @@
-package info.androidhive.roomdatabase.model;
+package info.androidhive.roomdatabase.db.dao;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
-import java.util.List;
-
-import info.androidhive.roomdatabase.utils.TimestampConverter;
 
 /**
  * Created by ravi on 05/02/18.
  */
 
 @Entity(tableName = "notes")
-public class Note {
+public class NoteEntity {
     @PrimaryKey(autoGenerate = true)
     int id;
 
@@ -26,7 +22,7 @@ public class Note {
     @ColumnInfo(name = "timestamp")
     Date timestamp;
 
-    public Note(@NonNull String note) {
+    public NoteEntity(@NonNull String note) {
         this.note = note;
 
         // TODO - not sure about this

@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.adapter;
+package info.androidhive.roomdatabase.ui.notes;
 
 /**
  * Created by ravi on 05/02/18.
@@ -7,6 +7,7 @@ package info.androidhive.roomdatabase.adapter;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -22,17 +22,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.roomdatabase.R;
-import info.androidhive.roomdatabase.model.Note;
+import info.androidhive.roomdatabase.db.dao.NoteEntity;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 
     private static final String TAG = NotesAdapter.class.getSimpleName();
 
     private Context context;
-    private List<Note> notes;
+    private List<NoteEntity> noteList;
     private NotesAdapterListener listener;
-
-    // TODO - use DiffUtils to compare and update items
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.note)
@@ -51,14 +49,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onClick(notes.get(getLayoutPosition()), getLayoutPosition());
+                    listener.onClick(noteList.get(getLayoutPosition()), getLayoutPosition());
                 }
             });
 
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    listener.onLongClick(notes.get(getLayoutPosition()), getLayoutPosition());
+                    listener.onLongClick(noteList.get(getLayoutPosition()), getLayoutPosition());
                     return true;
                 }
             });
@@ -81,8 +79,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if (notes != null) {
-            Note note = notes.get(position);
+        if (noteList != null) {
+            NoteEntity note = noteList.get(position);
             holder.note.setText(note.getNote());
             // Displaying dot from HTML character code
             holder.dot.setText(Html.fromHtml("&#8226;"));
@@ -97,15 +95,47 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        if (notes != null)
-            return notes.size();
+        if (noteList != null)
+            return noteList.size();
         else
-            return notes.size();
+            return noteList.size();
     }
 
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
-        notifyDataSetChanged();
+    public void setNoteList(final List<NoteEntity> notes) {
+        if (noteList == null) {
+            noteList = notes;
+            notifyItemRangeInserted(0, noteList.size());
+        } else {
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                @Override
+                public int getOldListSize() {
+                    return noteList.size();
+                }
+
+                @Override
+                public int getNewListSize() {
+                    return notes.size();
+                }
+
+                @Override
+                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                    NoteEntity oldNote = noteList.get(oldItemPosition);
+                    NoteEntity newNote = notes.get(newItemPosition);
+
+                    return oldNote.getId() == newNote.getId();
+                }
+
+                @Override
+                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                    NoteEntity oldNote = noteList.get(oldItemPosition);
+                    NoteEntity newNote = notes.get(newItemPosition);
+
+                    return oldNote.getId() == newNote.getId() && oldNote.getNote().equals(newNote.getNote());
+                }
+            });
+            noteList = notes;
+            diffResult.dispatchUpdatesTo(this);
+        }
     }
 
     /**
@@ -142,8 +172,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
     }
 
     public interface NotesAdapterListener {
-        void onClick(Note note, int position);
+        void onClick(NoteEntity note, int position);
 
-        void onLongClick(Note note, int position);
+        void onLongClick(NoteEntity note, int position);
     }
 }
