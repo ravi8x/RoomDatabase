@@ -111,12 +111,12 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
-                .setPositiveButton(shouldUpdate ? "update" : "save", new DialogInterface.OnClickListener() {
+                .setPositiveButton(shouldUpdate ? getString(R.string.update) : getString(R.string.save), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogBox, int id) {
 
                     }
                 })
-                .setNegativeButton("cancel",
+                .setNegativeButton(android.R.string.cancel,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
                                 dialogBox.cancel();
@@ -131,7 +131,7 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
             public void onClick(View v) {
                 // Show toast message when no text is entered
                 if (TextUtils.isEmpty(inputNote.getText().toString())) {
-                    Toast.makeText(getActivity(), "Enter note!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.dialog_title_enter_note), Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     alertDialog.dismiss();
@@ -156,10 +156,10 @@ public class NoteListFragment extends Fragment implements NotesAdapter.NotesAdap
      * Delete - 0
      */
     private void showActionsDialog(final NoteEntity note, final int position) {
-        CharSequence colors[] = new CharSequence[]{"Edit", "Delete"};
+        CharSequence colors[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Choose option");
+        builder.setTitle(getString(R.string.dialog_title_choose));
         builder.setItems(colors, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

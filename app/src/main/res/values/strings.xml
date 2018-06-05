@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Room Database</string>
+    <string name="app_name">Notes</string>
     <string name="action_settings">Settings</string>
     <string name="activity_title_home">Notes</string>
     <string name="msg_no_notes">No noteList found!</string>
@@ -8,5 +8,10 @@
     <string name="hint_enter_note">Enter your note!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="update">update</string>
+    <string name="save">save</string>
+    <string name="dialog_title_enter_note">Enter note!</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="dialog_title_choose">Choose option</string>
 </resources>
