@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import info.androidhive.roomdatabase.db.NotesRepository;
-import info.androidhive.roomdatabase.db.dao.NoteEntity;
+import info.androidhive.roomdatabase.db.entity.NoteEntity;
 
 public class NotesListViewModel extends AndroidViewModel {
 

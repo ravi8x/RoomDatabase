@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.db.dao;
+package info.androidhive.roomdatabase.db.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;

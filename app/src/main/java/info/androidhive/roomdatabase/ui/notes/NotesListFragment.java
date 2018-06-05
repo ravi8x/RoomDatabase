@@ -27,8 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import info.androidhive.roomdatabase.R;
-import info.androidhive.roomdatabase.db.NotesRepository;
-import info.androidhive.roomdatabase.db.dao.NoteEntity;
+import info.androidhive.roomdatabase.db.entity.NoteEntity;
 import info.androidhive.roomdatabase.utils.MyDividerItemDecoration;
 
 /**

@@ -1,4 +1,4 @@
-package info.androidhive.roomdatabase.db.entity;
+package info.androidhive.roomdatabase.db.dao;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
@@ -9,7 +9,7 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
-import info.androidhive.roomdatabase.db.dao.NoteEntity;
+import info.androidhive.roomdatabase.db.entity.NoteEntity;
 
 /**
  * Created by ravi on 05/02/18.

@@ -24,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import info.androidhive.roomdatabase.R;
-import info.androidhive.roomdatabase.db.dao.NoteEntity;
+import info.androidhive.roomdatabase.db.entity.NoteEntity;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder> {
 

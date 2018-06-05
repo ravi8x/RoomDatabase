@@ -6,8 +6,8 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
-import info.androidhive.roomdatabase.db.dao.NoteEntity;
-import info.androidhive.roomdatabase.db.entity.NoteDao;
+import info.androidhive.roomdatabase.db.entity.NoteEntity;
+import info.androidhive.roomdatabase.db.dao.NoteDao;
 
 /**
  * Created by ravi on 05/02/18.
