@@ -4,7 +4,10 @@ Android Architecture Component : Room Persistency Library example. An example of
 
 TBD:
 
-One to Many relation
+> One to Many relation
 
-Many to Many relation
+> Many to Many relation
 
+> Tutorial
+
+> Documentation
