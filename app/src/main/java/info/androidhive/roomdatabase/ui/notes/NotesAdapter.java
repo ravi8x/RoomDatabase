@@ -152,10 +152,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
 
         @Override
         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            Log.e(TAG, "areContentsTheSame: " + oldNotes.get(oldItemPosition).equals(newNotes.get(newItemPosition)) + ", " + oldNotes.get(oldItemPosition).getNote() + " = " + newNotes.get(newItemPosition).getNote());
+            // TODO - Fix the Bug
+            /**
+             * This method always retuning true even though the content are different
+             * Observations: live data array reference is maintained hence the both
+             * arrays are pointing to same reference.
+             * */
 
+            // Temporary fix - this always returns false
             return oldNotes.get(oldItemPosition).getId() == newNotes.get(newItemPosition).getId()
-                    && oldNotes.get(oldItemPosition).getNote().equals(newNotes.get(newItemPosition).getNote());
+                  && oldNotes.get(oldItemPosition).equals(newNotes.get(newItemPosition));
+
+
+            // This should be actual condition
+            //return oldNotes.get(oldItemPosition).getId() == newNotes.get(newItemPosition).getId()
+              //      && oldNotes.get(oldItemPosition).getNote().equals(newNotes.get(newItemPosition).getNote());
         }
     }
 
