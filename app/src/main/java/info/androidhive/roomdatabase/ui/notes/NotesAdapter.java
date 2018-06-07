@@ -8,6 +8,7 @@ import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,13 +96,15 @@ public class NotesAdapter extends ListAdapter<NoteEntity, NotesAdapter.MyViewHol
     private static final DiffUtil.ItemCallback<NoteEntity> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<NoteEntity>() {
                 @Override
-                public boolean areItemsTheSame(@NonNull NoteEntity oldItem, @NonNull NoteEntity newItem) {
-                    return oldItem.getId() == newItem.getId();
+                public boolean areItemsTheSame(@NonNull NoteEntity oldNote, @NonNull NoteEntity newNote) {
+                    return oldNote.getId() == newNote.getId();
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull NoteEntity oldItem, @NonNull NoteEntity newItem) {
-                    return oldItem.getId() == newItem.getId() && oldItem.getNote().equals(newItem.getNote());
+                public boolean areContentsTheSame(@NonNull NoteEntity oldNote, @NonNull NoteEntity newNote) {
+                    Log.e(TAG, "OldNote: " + oldNote.getNote());
+                    Log.e(TAG, "NewNote: " + newNote.getNote());
+                    return oldNote.getId() == newNote.getId() && oldNote.getNote().equals(newNote.getNote());
                 }
             };
 
