@@ -81,12 +81,7 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
         viewModel.getNotes().observe(this, new Observer<List<NoteEntity>>() {
             @Override
             public void onChanged(@Nullable List<NoteEntity> notes) {
-
-                for (NoteEntity note : notes) {
-                    Log.e(TAG, note.getId() + ", " + note.getNote());
-                }
-
-                mAdapter.setNoteList(notes);
+                mAdapter.submitList(notes);
                 toggleEmptyNotes(notes.size());
             }
         });
