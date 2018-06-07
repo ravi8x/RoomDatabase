@@ -15,4 +15,5 @@
     <string name="action_delete_all">Delete All Notes</string>
     <string name="action_about">About</string>
     <string name="activity_title_about">About</string>
+    <string name="toast_edit_actions">Long press on the row to Edit or Delete the note.</string>
 </resources>

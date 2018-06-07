@@ -73,6 +73,8 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 16));
         recyclerView.setAdapter(mAdapter);
+
+        Toast.makeText(getActivity(), getString(R.string.toast_edit_actions), Toast.LENGTH_LONG).show();
     }
 
     @Override
