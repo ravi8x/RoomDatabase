@@ -8,7 +8,6 @@ import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,8 +101,6 @@ public class NotesAdapter extends ListAdapter<NoteEntity, NotesAdapter.MyViewHol
 
                 @Override
                 public boolean areContentsTheSame(@NonNull NoteEntity oldNote, @NonNull NoteEntity newNote) {
-                    Log.e(TAG, "OldNote: " + oldNote.getNote());
-                    Log.e(TAG, "NewNote: " + newNote.getNote());
                     return oldNote.getId() == newNote.getId() && oldNote.getNote().equals(newNote.getNote());
                 }
             };

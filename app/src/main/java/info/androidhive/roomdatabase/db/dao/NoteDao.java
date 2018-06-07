@@ -24,6 +24,9 @@ public interface NoteDao {
     @Query("SELECT * FROM notes WHERE id=:id")
     NoteEntity getNoteById(int id);
 
+    @Query("SELECT * FROM notes WHERE id=:id")
+    LiveData<NoteEntity> getNote(int id);
+
     @Insert
     long insert(NoteEntity note);
 

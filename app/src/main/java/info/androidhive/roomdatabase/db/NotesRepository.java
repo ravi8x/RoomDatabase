@@ -29,7 +29,7 @@ public class NotesRepository {
         return mAllNotes;
     }
 
-    public NoteEntity getNote(int noteId)  throws ExecutionException, InterruptedException {
+    public NoteEntity getNote(int noteId) throws ExecutionException, InterruptedException {
         return new getNoteAsync(mNoteDao).execute(noteId).get();
     }
 

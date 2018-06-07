@@ -118,7 +118,8 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
         dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_note_title) : getString(R.string.lbl_edit_note_title));
 
         if (shouldUpdate && note != null) {
-            inputNote.setText(note.getNote());
+            // append sets text to EditText and places the cursor at the end
+            inputNote.append(note.getNote());
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
