@@ -112,6 +112,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.MyViewHolder
              * DiffUti is always returning true for different objects
              * Observations: array list reference is maintained even though
              * new instance is created
+             * Refer this: https://medium.com/@trionkidnapper/recyclerview-more-animations-with-less-code-using-support-library-listadapter-62e65126acdb
              * */
 
             final List<NoteEntity> newList = new ArrayList<>();
