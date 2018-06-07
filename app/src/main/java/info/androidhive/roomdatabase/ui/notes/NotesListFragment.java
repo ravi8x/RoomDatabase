@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -165,32 +166,45 @@ public class NotesListFragment extends Fragment implements NotesAdapter.NotesAda
      * Edit - 0
      * Delete - 0
      */
-    private void showActionsDialog(final NoteEntity note, final int position) {
-        CharSequence colors[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
+    private void showActionsDialog(int noteId, final int position) {
+        // fetch the note from db
+        final NoteEntity note;
+        try {
+            note = viewModel.getNote(noteId);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.dialog_title_choose));
-        builder.setItems(colors, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    showNoteDialog(true, note, position);
-                } else {
-                    viewModel.deleteNote(note);
+            CharSequence colors[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.dialog_title_choose));
+            builder.setItems(colors, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        showNoteDialog(true, note, position);
+                    } else {
+                        viewModel.deleteNote(note);
+                    }
                 }
-            }
-        });
-        builder.show();
+            });
+            builder.show();
+
+        } catch (ExecutionException e) {
+            // TODO - handle error
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO - handle error
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void onClick(NoteEntity note, int position) {
+    public void onClick(int noteId, int position) {
         // No action is required
     }
 
     @Override
-    public void onLongClick(NoteEntity note, int position) {
-        showActionsDialog(note, position);
+    public void onLongClick(int noteId, int position) {
+        showActionsDialog(noteId, position);
     }
 
     @Override

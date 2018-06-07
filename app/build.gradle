@@ -24,7 +24,6 @@ ext {
     butterknifeVersion = '8.8.1'
     roomVersion = '1.1.0'
     lifeCycle = '1.1.1'
-
 }
 
 dependencies {

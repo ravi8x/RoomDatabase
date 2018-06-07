@@ -45,14 +45,14 @@ public class NotesAdapter extends ListAdapter<NoteEntity, NotesAdapter.MyViewHol
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onClick(getNote(getLayoutPosition()), getLayoutPosition());
+                    listener.onClick(getNote(getLayoutPosition()).getId(), getLayoutPosition());
                 }
             });
 
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    listener.onLongClick(getNote(getLayoutPosition()), getLayoutPosition());
+                    listener.onLongClick(getNote(getLayoutPosition()).getId(), getLayoutPosition());
                     return true;
                 }
             });
@@ -142,8 +142,8 @@ public class NotesAdapter extends ListAdapter<NoteEntity, NotesAdapter.MyViewHol
     }
 
     public interface NotesAdapterListener {
-        void onClick(NoteEntity note, int position);
+        void onClick(int noteId, int position);
 
-        void onLongClick(NoteEntity note, int position);
+        void onLongClick(int noteId, int position);
     }
 }

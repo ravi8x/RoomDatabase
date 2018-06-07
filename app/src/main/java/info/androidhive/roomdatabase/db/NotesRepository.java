@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
 import info.androidhive.roomdatabase.db.dao.NoteDao;
@@ -28,8 +29,8 @@ public class NotesRepository {
         return mAllNotes;
     }
 
-    public NoteEntity getNote(int noteId) {
-        return mNoteDao.getNoteById(noteId);
+    public NoteEntity getNote(int noteId)  throws ExecutionException, InterruptedException {
+        return new getNoteAsync(mNoteDao).execute(noteId).get();
     }
 
     public void insertNote(NoteEntity note) {
@@ -53,6 +54,20 @@ public class NotesRepository {
      * otherwise the following error will be thrown
      * `java.lang.IllegalStateException: Cannot access database on the main thread since it may potentially lock the UI for a long period of time.`
      */
+
+    private static class getNoteAsync extends AsyncTask<Integer, Void, NoteEntity> {
+
+        private NoteDao mNoteDaoAsync;
+
+        getNoteAsync(NoteDao animalDao) {
+            mNoteDaoAsync = animalDao;
+        }
+
+        @Override
+        protected NoteEntity doInBackground(Integer... ids) {
+            return mNoteDaoAsync.getNoteById(ids[0]);
+        }
+    }
 
     private static class insertNotesAsync extends AsyncTask<NoteEntity, Void, Long> {
 

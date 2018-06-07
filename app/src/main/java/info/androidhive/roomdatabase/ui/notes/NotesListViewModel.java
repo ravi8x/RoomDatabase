@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import info.androidhive.roomdatabase.db.NotesRepository;
 import info.androidhive.roomdatabase.db.entity.NoteEntity;
@@ -27,6 +28,10 @@ public class NotesListViewModel extends AndroidViewModel {
         }
 
         return notes;
+    }
+
+    public NoteEntity getNote(int id) throws ExecutionException, InterruptedException {
+        return mRepository.getNote(id);
     }
 
     public void insertNote(NoteEntity note) {
